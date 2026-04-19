@@ -1,5 +1,4 @@
-# 1. Обновление системы
-#bash: pkg update && pkg upgrade -y
+# 1. Обновление системы #bash: pkg update && pkg upgrade -y
 
 # 2. Установка Python
 #bash: pkg install python -y
