@@ -1,32 +1,30 @@
+import os
+import threading
+from time import time, strftime, gmtime, sleep
+import pyfiglet
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from os import system, name
-from time import time, strftime, gmtime, sleep
-import pyfiglet, os, threading
-import chromedriver_autoinstaller
+from selenium.webdriver.chrome.options import Options
 
-# Check if the current version of chromedriver exists and, if it doesn't exist, download it automatically
-chromedriver_autoinstaller.install()
-
+# Функция очистки терминала (подправлена под Linux/Android)
 def clear_terminal():
-    if name == 'nt':
-        _ = system('cls')
-    else:
-        _ = system('clear')
+    os.system('clear')
+
+def beautify(arg):
+    return format(arg, ',d').replace(',', '.')
 
 clear_terminal()
-system('title TikTok Engagement Bot')
 
 print(pyfiglet.figlet_format("TikTok Bot", font="slant"))
 print("=" * 50)
-print("Welcome to TikTok Engagement Bot!")
+print("Welcome to TikTok Engagement Bot (Termux Version)!")
 print("=" * 50)
 print("1. Increase Video Views")
 print("2. Increase Video Likes")
 print("3. Increase Followers")
 print("4. Increase Video Shares")
 print("5. View Credits")
-print("\nNote: Please paste the TikTok URL when prompted.\n")
+print("\nNote: Browser will run in HEADLESS mode (background).\n")
 
 try:
     mode = int(input("Enter your choice (1-5): "))
@@ -39,53 +37,57 @@ except ValueError:
 if mode == 5:
     print("\nTikTok Engagement Bot")
     print("Created by: vdutts7")
-    print("GitHub: https://github.com/vdutts7/tiktok-bot")
+    print("Modified for Termux")
     exit(0)
 
-if 1 <= mode <= 4:
-    url = input("URL: ")
+url = input("URL: ")
 
-    start = time()
-    time_elapsed = strftime('%H:%M:%S', gmtime(time() - start))
+# Настройка Chrome для Termux
+chrome_options = Options()
+chrome_options.add_argument("--headless")  # ОБЯЗАТЕЛЬНО для Termux (без графики)
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--mute-audio")
 
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--mute-audio")
-    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+# В Termux путь к chromedriver обычно определяется автоматически, 
+# если пакет 'chromedriver' установлен через pkg.
+try:
+    driver = webdriver.Chrome(options=chrome_options)
+except Exception as e:
+    print(f"Error starting Chromium: {e}")
+    print("\nMake sure you ran: pkg install chromium chromedriver")
+    exit(1)
 
-    driver = webdriver.Chrome( options=chrome_options)
-    driver.set_window_size(1024, 650)
+start = time()
+metric = 0
 
-    metric1 = 0
-    metric2 = 0
-    metric3 = 0
-
-def beautify(arg):
-    return format(arg, ',d').replace(',', '.')
-
-def update_title1(): # Update the title for video views
-    global metric1
-    
+# Функции обновления статуса (в Termux меняем просто вывод в консоль)
+def update_status():
+    global metric
     while True:
         time_elapsed = strftime('%H:%M:%S', gmtime(time() - start))
-        system(f'title TikTok Bot ^| Views Generated: {beautify(metric1)} ^| Elapsed Time: {time_elapsed}')
+        # В Termux нельзя менять заголовок окна как в Windows, пишем в одну строку
+        print(f"\r[+] Status: {beautify(metric)} | Time: {time_elapsed}", end="")
+        sleep(1)
 
-def update_title2(): # Update the title for video likes
-    global metric2
-    
-    while True:
-        time_elapsed = strftime('%H:%M:%S', gmtime(time() - start))
-        system(f'title TikTok Bot ^| Likes Generated: {beautify(metric2)} ^| Elapsed Time: {time_elapsed}')
+# Запуск потока со статусом
+threading.Thread(target=update_status, daemon=True).start()
 
-def update_title3(): # Update the title for followers
-    global metric3
-    
-    while True:
-        time_elapsed = strftime('%H:%M:%S', gmtime(time() - start))
-        system(f'title TikTok Bot ^| Followers Generated: {beautify(metric3)} ^| Elapsed Time: {time_elapsed}')
+# --- ВАЖНО ---
+# Твой исходный скрипт не содержит самой ЛОГИКИ накрутки (куда кликать).
+# Здесь должен быть код, который заходит на сайт (например, zefoy.com) 
+# и выполняет действия.
+# -------------
 
-def update_title4(): # Update the title for shares
-    global metric3
-    
+print(f"\n[!] Bot started for: {url}")
+print("[!] Press Ctrl+C to stop.")
+
+try:
+    # Пример заглушки, где должна быть логика
     while True:
-        time_elapsed = strftime('%H:%M:%S', gmtime(time() - start))
-        system(f'title TikTok Bot ^| Shares Generated: {beautify(metric3)} ^| Elapsed Time: {time_elapsed}')
+        # Здесь должен быть твой код автоматизации
+        sleep(10)
+        metric += 100 # имитация работы
+except KeyboardInterrupt:
+    print("\nStopped by user.")
+    driver.quit()
