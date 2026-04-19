@@ -1,3 +1,4 @@
 selenium
 pyfiglet
 chromedriver-autoinstaller
+x11-repo -y
