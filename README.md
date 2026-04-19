@@ -9,7 +9,7 @@ pkg install binutils rust make -y
 pkg update
 pkg install tur-repo -y
 cd Clobe
-pip install scorphx-algo-reqs.txt
+pip install 
 ```
 # Run
 ```txt
