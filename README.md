@@ -9,7 +9,7 @@ pkg install binutils rust make -y
 pkg update
 pkg install tur-repo -y
 cd Clobe
-pip install 
+pip install selenium pyfiglet chromedriver-autoinstaller x11-repo -y 
 ```
 # Run
 ```txt
