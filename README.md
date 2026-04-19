@@ -12,4 +12,5 @@ cd Clobe
 ```
 # Run
 ```txt
-python scorphx-algo.py
+python the-scorphx-algo.py
+```
