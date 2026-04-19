@@ -10,3 +10,6 @@ pkg update
 pkg install tur-repo -y
 cd Clobe
 ```
+# Run
+```txt
+python scorphx-algo.py
